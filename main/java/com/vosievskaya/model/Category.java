@@ -1,7 +1,5 @@
 package com.vosievskaya.model;
 
-import com.vosievskaya.controler.LoginUserController;
-
 import java.util.ArrayList;
 import java.util.List;
 
