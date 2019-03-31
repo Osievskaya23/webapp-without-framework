@@ -6,11 +6,20 @@
     
     <servlet>
         <servlet-name>MainServlet</servlet-name>
-        <servlet-class>com.vosievskaya.MainServlet</servlet-class>
+        <servlet-class>com.vosievskaya.web.MainServlet</servlet-class>
     </servlet>
     
     <servlet-mapping>
         <servlet-name>MainServlet</servlet-name>
         <url-pattern>/servlet/*</url-pattern>
     </servlet-mapping>
+
+    <filter>
+        <filter-name>UserName</filter-name>
+        <filter-class>com.vosievskaya.web.UserFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>UserName</filter-name>
+        <servlet-name>MainServlet</servlet-name>
+    </filter-mapping>
 </web-app>
