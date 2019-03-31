@@ -1,9 +1,8 @@
 package com.vosievskaya.web;
 
-import com.vosievskaya.Factory;
-import com.vosievskaya.model.Role;
-import com.vosievskaya.model.User;
-import com.vosievskaya.service.UserService;
+import static com.vosievskaya.Factory.getConnection;
+import static com.vosievskaya.Factory.getUserDaoImpl;
+import static com.vosievskaya.Factory.getUserServiceImpl;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -19,7 +18,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class UserFilter implements Filter {
+import com.vosievskaya.model.Role;
+import com.vosievskaya.model.User;
+import com.vosievskaya.service.UserService;
+
+public class AdminFilter implements Filter {
 
     private Set<String> openUri = new HashSet<>();
 
@@ -29,13 +32,13 @@ public class UserFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         openUri.add("/servlet/login");
         openUri.add("/servlet/register");
-        userService = Factory.getUserServiceImpl(Factory.getUserDaoImpl(Factory.getConnection()));
+        userService = getUserServiceImpl(getUserDaoImpl(getConnection()));
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
-        Cookie[] cookies = req.getCookies();
+        javax.servlet.http.Cookie[] cookies = req.getCookies();
 
         if (openUri.contains(req.getRequestURI())) {
             processRequest(request, response, chain);
@@ -46,10 +49,23 @@ public class UserFilter implements Filter {
                     .map(Cookie::getValue)
                     .flatMap(userService::findByToken);
 
-            if (user.isPresent()) {
-                processRequest(request, response, chain);
+            if (req.getRequestURI().startsWith("/servlet/admin")) {
+                boolean isAuthorized = user.map(u -> u.getRoles().stream()
+                        .anyMatch(r -> r.getRoleName().equals(Role.RoleName.ADMIN)))
+                        .orElse(false);
+
+                if (isAuthorized) {
+                    processRequest(request, response, chain);
+                } else {
+                    dispatch(request, response, "notAllowed");
+                }
+
             } else {
-                dispatch(request, response, "login");
+                if (user.isPresent()) {
+                    processRequest(request, response, chain);
+                } else {
+                    dispatch(request, response, "login");
+                }
             }
         }
     }
