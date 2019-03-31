@@ -1,7 +1,7 @@
 package com.vosievskaya.controler;
 
-import com.vosievskaya.Request;
-import com.vosievskaya.ViewModel;
+import com.vosievskaya.web.Request;
+import com.vosievskaya.web.ViewModel;
 
 public interface Controller {
 
