@@ -14,14 +14,13 @@ public class ProductServiceImpl implements ProductService {
         this.productDao = productDao;
     }
 
-
     @Override
     public List<Product> getAll() {
-        return productDao.getAll();
+        return productDao.getAll("PRODUCTS");
     }
 
     @Override
     public Optional<Product> getProductById(Long id) {
-        return Optional.ofNullable(productDao.getById(id));
+        return Optional.ofNullable(productDao.getById(id, "PRODUCTS"));
     }
 }

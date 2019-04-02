@@ -5,33 +5,35 @@ import com.vosievskaya.controller.GetCategoryByIdController;
 import com.vosievskaya.controller.GetProductByIdController;
 import com.vosievskaya.controller.LoginUserController;
 import com.vosievskaya.dao.CategoryDao;
-import com.vosievskaya.dao.CategoryDaoImpl;
 import com.vosievskaya.dao.ProductDao;
-import com.vosievskaya.dao.ProductDaoImpl;
 import com.vosievskaya.dao.UserDao;
-import com.vosievskaya.dao.UserDaoImpl;
-import com.vosievskaya.model.Product;
-import com.vosievskaya.service.*;
+import com.vosievskaya.service.CategoryService;
+import com.vosievskaya.service.CategoryServiceImpl;
+import com.vosievskaya.service.ProductService;
+import com.vosievskaya.service.ProductServiceImpl;
+import com.vosievskaya.service.UserService;
+import com.vosievskaya.service.UserServiceImpl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class Factory {
+public class ConnectionFactory {
+
+    private static final String DRIVER = "org.h2.Driver";
+    private static final String URL = "jdbc:h2:tcp://localhost/~/vosievskaya ";
+    private static final String USERNAME = "sa";
+    private static final String PASSWORD = "";
 
     private static Connection connection;
 
-    static {
-        try {
-            Class.forName("org.h2.Driver");
-            connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/vosievskaya ", "sa", "");
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static Connection getConnection() {
-        return connection;
+        try {
+            Class.forName(DRIVER);
+            return connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException("Error connecting to the database", e);
+        }
     }
 
     public static LoginUserController getLoginUserController(UserService userService) {
@@ -42,8 +44,8 @@ public class Factory {
         return new UserServiceImpl(userDao);
     }
 
-    public static UserDao getUserDaoImpl(Connection connection) {
-        return new UserDaoImpl(connection);
+    public static UserDao getUserDao(Connection connection) {
+        return new UserDao(connection);
     }
 
     public static CategoryService getCategoryService(CategoryDao categoryDao) {
@@ -51,7 +53,7 @@ public class Factory {
     }
 
     public static CategoryDao getCategoryDao(Connection connection) {
-        return new CategoryDaoImpl(connection);
+        return new CategoryDao(connection);
     }
 
     public static GetAllCategoryController getAllCategoryController(CategoryService categoryService) {
@@ -65,7 +67,7 @@ public class Factory {
     public static ProductService getProductService(ProductDao productDao) { return new ProductServiceImpl(productDao); }
 
     public static ProductDao getProductDao(Connection connection) {
-        return new ProductDaoImpl(connection);
+        return new ProductDao(connection);
     }
 
     public static GetProductByIdController getProductByIdController(ProductService productService) {
