@@ -1,8 +1,8 @@
 package com.vosievskaya.web;
 
-import static com.vosievskaya.Factory.getConnection;
-import static com.vosievskaya.Factory.getUserDaoImpl;
-import static com.vosievskaya.Factory.getUserServiceImpl;
+import static com.vosievskaya.ConnectionFactory.getConnection;
+import static com.vosievskaya.ConnectionFactory.getUserDao;
+import static com.vosievskaya.ConnectionFactory.getUserServiceImpl;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -30,9 +30,7 @@ public class AdminFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        openUri.add("/servlet/login");
-        openUri.add("/servlet/register");
-        userService = getUserServiceImpl(getUserDaoImpl(getConnection()));
+        userService = getUserServiceImpl(getUserDao(getConnection()));
     }
 
     @Override
@@ -40,33 +38,24 @@ public class AdminFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         javax.servlet.http.Cookie[] cookies = req.getCookies();
 
-        if (openUri.contains(req.getRequestURI())) {
-            processRequest(request, response, chain);
-        } else {
+        if (req.getRequestURI().startsWith("/servlet/admin")) {
             Optional<User> user = Stream.of(cookies)
-                    .filter(c -> c.getName().equals("Mate_Application"))
-                    .findFirst()
-                    .map(Cookie::getValue)
-                    .flatMap(userService::findByToken);
+                        .filter(c -> c.getName().equals("Mate_Application"))
+                        .findFirst()
+                        .map(Cookie::getValue)
+                        .flatMap(userService::findByToken);
 
-            if (req.getRequestURI().startsWith("/servlet/admin")) {
-                boolean isAuthorized = user.map(u -> u.getRoles().stream()
-                        .anyMatch(r -> r.getRoleName().equals(Role.RoleName.ADMIN)))
-                        .orElse(false);
+            boolean isAuthorized = user.map(u -> u.getRoles().stream()
+                    .anyMatch(r -> r.getRoleName().equals(Role.RoleName.ADMIN)))
+                    .orElse(false);
 
-                if (isAuthorized) {
-                    processRequest(request, response, chain);
-                } else {
-                    dispatch(request, response, "notAllowed");
-                }
-
+            if (isAuthorized) {
+                processRequest(request, response, chain);
             } else {
-                if (user.isPresent()) {
-                    processRequest(request, response, chain);
-                } else {
-                    dispatch(request, response, "login");
-                }
+                dispatch(request, response, "notAllowed");
             }
+        } else {
+            processRequest(request, response, chain);
         }
     }
 

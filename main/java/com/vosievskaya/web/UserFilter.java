@@ -1,7 +1,6 @@
 package com.vosievskaya.web;
 
-import com.vosievskaya.Factory;
-import com.vosievskaya.model.Role;
+import com.vosievskaya.ConnectionFactory;
 import com.vosievskaya.model.User;
 import com.vosievskaya.service.UserService;
 
@@ -29,7 +28,7 @@ public class UserFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         openUri.add("/servlet/login");
         openUri.add("/servlet/register");
-        userService = Factory.getUserServiceImpl(Factory.getUserDaoImpl(Factory.getConnection()));
+        userService = ConnectionFactory.getUserServiceImpl(ConnectionFactory.getUserDao(ConnectionFactory.getConnection()));
     }
 
     @Override
@@ -51,6 +50,7 @@ public class UserFilter implements Filter {
             } else {
                 dispatch(request, response, "login");
             }
+            processRequest(request, response, chain);
         }
     }
 
