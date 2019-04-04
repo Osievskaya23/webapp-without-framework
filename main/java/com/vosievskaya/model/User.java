@@ -13,6 +13,7 @@ public class  User {
     private String secondName;
     private List<Role> roles = new ArrayList<>();
 
+    public User() {}
 
     public User(Long id, String username, String password, String token, String firstName, String secondName) {
         this.id = id;
