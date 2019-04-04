@@ -1,6 +1,10 @@
 package com.vosievskaya.annotation;
 
-public @interface MyAnnotation {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 
-    
+@Target(ElementType.TYPE)
+public @interface TableAnnotation {
+
+    String tableName();
 }

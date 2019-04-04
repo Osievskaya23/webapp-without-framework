@@ -9,5 +9,5 @@ public interface CategoryService {
 
     List<Category> getAll();
 
-    Optional<Category> getCategoryById(Long id);
+    Optional<Category> getById(Long id);
 }

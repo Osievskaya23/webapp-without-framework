@@ -1,11 +1,13 @@
 package com.vosievskaya.service;
 
+import com.vosievskaya.annotation.TableAnnotation;
 import com.vosievskaya.dao.CategoryDao;
 import com.vosievskaya.model.Category;
 
 import java.util.List;
 import java.util.Optional;
 
+@TableAnnotation(tableName = "CATEGORIES")
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryDao categoryDao;
@@ -20,7 +22,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Optional<Category> getCategoryById(Long id) {
+
+    public Optional<Category> getById(Long id) {
         return Optional.ofNullable(categoryDao.getById(id, "CATEGORIES"));
     }
 }

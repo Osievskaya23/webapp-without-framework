@@ -1,11 +1,13 @@
 package com.vosievskaya.service;
 
+import com.vosievskaya.annotation.TableAnnotation;
 import com.vosievskaya.dao.ProductDao;
 import com.vosievskaya.model.Product;
 
 import java.util.List;
 import java.util.Optional;
 
+@TableAnnotation(tableName = "PRODUCTS")
 public class ProductServiceImpl implements ProductService {
 
     private final ProductDao productDao;
@@ -20,7 +22,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<Product> getProductById(Long id) {
+    public Optional<Product> getById(Long id) {
         return Optional.ofNullable(productDao.getById(id, "PRODUCTS"));
     }
 }
