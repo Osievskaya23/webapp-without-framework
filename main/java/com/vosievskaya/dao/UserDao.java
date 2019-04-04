@@ -31,7 +31,7 @@ public class UserDao extends AbstractDao<User, Long>{
         try {
             statement = connection.prepareStatement(query);
             statement.setString(1, user.getUsername());
-            statement.setString(1, sha256(user.getPassword()));
+            statement.setString(2, sha256(user.getPassword()));
 
             rs = statement.executeQuery();
 
@@ -94,18 +94,18 @@ public class UserDao extends AbstractDao<User, Long>{
     }
 
     private User getUserFromResultSet(ResultSet rs) throws SQLException {
-        Long id = rs.getLong("u_id");
-        String username = rs.getString("username");
-        String password = rs.getString("password");
-        String token = rs.getString("token");
-        String firstName = rs.getString("first_name");
-        String lastName = rs.getString("last_name");
+        Long id = rs.getLong("ID");
+        String username = rs.getString("USERNAME");
+        String password = rs.getString("PASSWORD");
+        String token = rs.getString("TOKEN");
+        String firstName = rs.getString("FIRST_NAME");
+        String lastName = rs.getString("LAST_NAME");
         return new User(id, username, password, token, firstName, lastName);
     }
 
     private Role getRoleFromResultSet(ResultSet rs) throws SQLException {
-        Long id = rs.getLong("r_id");
-        String roleName = rs.getString("role_name");
+        Long id = rs.getLong("ID");
+        String roleName = rs.getString("ROLE_NAME");
         return new Role(id, Role.RoleName.valueOf(roleName));
     }
 }

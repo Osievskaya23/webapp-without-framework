@@ -1,5 +1,7 @@
 package com.vosievskaya.dao;
 
+import com.vosievskaya.annotation.TableAnnotation;
+
 import static java.lang.String.format;
 
 import java.lang.reflect.InvocationTargetException;
@@ -30,7 +32,7 @@ public abstract class AbstractDao<T, ID> implements GenericDao<T, ID>{
     public T create(T t, String tableName) {
         String query = "INSERT INTO ? (?) VALUES(?)";
 
-        PreparedStatement statement;
+        PreparedStatement statement = null;
 
         try {
             statement = connection.prepareStatement(query);
@@ -49,18 +51,15 @@ public abstract class AbstractDao<T, ID> implements GenericDao<T, ID>{
     public T getById(ID id, String tableName) {
         String query = "SELECT * FROM ? WHERE ID=?";
 
-        PreparedStatement statement;
+        PreparedStatement statement = null;
         ResultSet rs;
-        //ResultSetMetaData rsmd = null;
 
         try {
             statement = connection.prepareStatement(query);
-            //statement.setString(1, rsmd.getTableName(1));
             statement.setString(1, tableName);
             statement.setLong(2, Long.parseLong(String.valueOf(id)));
 
             rs = statement.executeQuery();
-            //rsmd = rs.getMetaData();
 
             if (rs.next()) {
                 return getObjectFromResultSet(rs);
@@ -77,14 +76,13 @@ public abstract class AbstractDao<T, ID> implements GenericDao<T, ID>{
     @Override
     public List<T> getAll(String tableName) {
         List<T> objectList = new ArrayList<>();
-        String query = "SELECT * FROM ?";
+        String query = format("SELECT * FROM %s", tableName);
 
-        PreparedStatement statement;
+        PreparedStatement statement = null;
         ResultSet rs;
 
         try {
             statement = connection.prepareStatement(query);
-            statement.setString(1, tableName);
 
             rs = statement.executeQuery();
 
@@ -103,7 +101,7 @@ public abstract class AbstractDao<T, ID> implements GenericDao<T, ID>{
     public T update(T t, String tableName) {
         String query = "UPDATE ? SET ? WHERE ID=?";
 
-        PreparedStatement statement;
+        PreparedStatement statement = null;
 
         try {
             statement = connection.prepareStatement(query);
@@ -124,7 +122,7 @@ public abstract class AbstractDao<T, ID> implements GenericDao<T, ID>{
     public void delete(ID id, String tableName) {
         String query = "DELETE FROM ? WHERE id=?";
 
-        PreparedStatement statement;
+        PreparedStatement statement = null;
 
         try{
             statement = connection.prepareStatement(query);
@@ -146,18 +144,12 @@ public abstract class AbstractDao<T, ID> implements GenericDao<T, ID>{
         try {
             t = clazz.newInstance();
 
-            if (fields.length != columnNames.length) {
-                throw new IndexOutOfBoundsException("Amount of object fields ant table column is different!");
-            } else {
-
-                //TODO WRITE STREAM
-                for (int i = 0; i < fields.length; i++) {
-                    Field field = fields[i];
-                    field.setAccessible(true);
-                    field.set(rs.getObject(columnNames[i]), field.getName());
-                }
+            //TODO WRITE STREAM
+            for (int i = 0; i < columnNames.length; i++) {
+                Field field = fields[i];
+                field.setAccessible(true);
+                field.set(t, rs.getObject(columnNames[i]));
             }
-
         } catch (InstantiationException
                 | IllegalAccessException
                 | IndexOutOfBoundsException e) {
