@@ -21,7 +21,7 @@ import java.sql.SQLException;
 public class ConnectionFactory {
 
     private static final String DRIVER = "org.h2.Driver";
-    private static final String URL = "jdbc:h2:tcp://localhost/~/vosievskaya ";
+    private static final String URL = "jdbc:h2:tcp://localhost/~/vosievskaya";
     private static final String USERNAME = "sa";
     private static final String PASSWORD = "";
 
@@ -30,6 +30,7 @@ public class ConnectionFactory {
     public static Connection getConnection() {
         try {
             Class.forName(DRIVER);
+            DriverManager.registerDriver(new org.h2.Driver());
             return connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException("Error connecting to the database", e);
