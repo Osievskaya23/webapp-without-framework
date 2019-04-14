@@ -2,9 +2,12 @@ package com.vosievskaya.service;
 
 import com.vosievskaya.model.Product;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
 
-    Optional<Product> getProductById(Long id);
+    List<Product> getAll();
+
+    Optional<Product> getById(Long id);
 }

@@ -1,7 +1,8 @@
-package com.vosievskaya.controler;
+package com.vosievskaya.controller;
 
-import com.vosievskaya.Request;
-import com.vosievskaya.ViewModel;
+import com.vosievskaya.web.Cookie;
+import com.vosievskaya.web.Request;
+import com.vosievskaya.web.ViewModel;
 import com.vosievskaya.model.User;
 import com.vosievskaya.service.UserService;
 
@@ -20,7 +21,9 @@ public class LoginUserController implements Controller {
         User user = User.of(username, password);
 
         return  userService.authorize(user)
-                .map(u -> ViewModel.of("welcome").withAttribute("user", u))
+                .map(u -> ViewModel.of("welcome")
+                        .withAttribute("user", u)
+                        .withCookie(Cookie.of("Mate_application", user.getToken())))
                 .orElseGet(() -> ViewModel.of("login").withAttribute("error", "msg"));
     }
 }

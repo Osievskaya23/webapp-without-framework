@@ -1,10 +1,8 @@
-package com.vosievskaya.controler;
+package com.vosievskaya.controller;
 
-import com.vosievskaya.Request;
-import com.vosievskaya.ViewModel;
+import com.vosievskaya.web.Request;
+import com.vosievskaya.web.ViewModel;
 import com.vosievskaya.service.CategoryService;
-
-import javax.swing.text.View;
 
 public class GetAllCategoryController implements Controller {
 

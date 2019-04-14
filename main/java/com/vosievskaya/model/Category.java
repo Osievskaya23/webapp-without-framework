@@ -1,7 +1,5 @@
 package com.vosievskaya.model;
 
-import com.vosievskaya.controler.LoginUserController;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +9,8 @@ public class Category {
     private String categoryName;
     private String description;
     private List<Product> products = new ArrayList<>();
+
+    public Category() {}
 
     public Category(Long id, String categoryName, String description) {
         this.id = id;

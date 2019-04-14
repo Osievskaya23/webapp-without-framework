@@ -1,4 +1,4 @@
-package com.vosievskaya;
+package com.vosievskaya.web;
 
 import java.util.HashMap;
 import java.util.Map;
