@@ -1,5 +1,7 @@
 package com.vosievskaya.dao;
 
+import static com.vosievskaya.util.Util.sha256;
+
 import com.vosievskaya.model.Role;
 import com.vosievskaya.model.User;
 
@@ -9,8 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.vosievskaya.util.Util.sha256;
 
 public class UserDao extends AbstractDao<User, Long>{
 

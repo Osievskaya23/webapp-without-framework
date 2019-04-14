@@ -1,6 +1,6 @@
 package com.vosievskaya.service;
 
-import com.vosievskaya.annotation.TableAnnotation;
+import com.vosievskaya.annotation.Table;
 import com.vosievskaya.dao.UserDao;
 import com.vosievskaya.model.User;
 
@@ -9,7 +9,6 @@ import java.util.Optional;
 import static com.vosievskaya.util.Util.generateToken;
 import static com.vosievskaya.util.Util.sha256;
 
-@TableAnnotation(tableName = "USERS")
 public class UserServiceImpl implements UserService{
 
     private final UserDao userDao;
@@ -24,6 +23,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Table(name = "USERS")
     public Optional<User> addUser(User user) {
         String hashedPassword = sha256(user.getPassword());
         user.setPassword(hashedPassword);
